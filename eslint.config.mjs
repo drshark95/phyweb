@@ -1,3 +1,4 @@
+// # 코드 품질 규칙(문법/사용하지 않는 변수 등)
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
