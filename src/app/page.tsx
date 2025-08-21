@@ -12,14 +12,13 @@ export default function Page() {
           <section className="grid place-items-center py-24 text-center">
             <div>
               <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight">
-                한 차시를 10초 만에
+                물리학, 주제 별로
                 <span className="block bg-gradient-to-r from-slate-900 to-indigo-600 bg-clip-text text-transparent">
-                  실행·공유·측정
+                  조작·이해·확인
                 </span>
               </h1>
               <p className="mx-auto mt-4 max-w-xl text-slate-600">
-                설치 없이 시작하는 과학 수업 웹 키트. 교사는 링크만, 학생은
-                브라우저만.
+                설치 없이 시작하는 과학 수업. 교사는 링크만, 학생은 브라우저만.
               </p>
               <div className="mt-10">
                 <Link
