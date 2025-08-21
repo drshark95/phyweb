@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 
 /**
  * Spectra.run — Single-file React prototype
- * - Landing → Topics → Lesson(사이드바+콘텐츠) 흐름
+ * - Landing → Topics → Lesson(사이드바+콘텐츠) 흐름 구조
  * - 페이드 전환, 라운드 카드, 소프트 섀도우, 미니 토글 네비게이션
  * - TailwindCSS 필요(캔버스 미리보기에서 적용)
  */
