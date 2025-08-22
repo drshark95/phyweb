@@ -6,5 +6,8 @@
   "typescript.tsdk": "node_modules/typescript/lib",
   "files.eol": "\n",
   "files.exclude": { "**/.next": true, "**/node_modules": false },
-  "tailwindCSS.experimental.classRegex": []
+  "tailwindCSS.experimental.classRegex": [],
+  "window.autoDetectColorScheme": true,
+  "workbench.preferredLightColorTheme": "GitHub Light Default",
+  "workbench.preferredDarkColorTheme": "GitHub Dark Dimmed"
 }
