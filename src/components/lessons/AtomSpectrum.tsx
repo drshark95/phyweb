@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useRouter } from "next/navigation";
 import { useBottomBarTop } from "@/components/BottomBarProvider";
 
 // 컴포넌트 밖: TOC 상수(참조 안정)
@@ -14,6 +15,13 @@ type SectionId = (typeof TOC)[number]["id"];
 
 export default function AtomSpectrum() {
   const [section, setSection] = React.useState<SectionId>("intro");
+  const router = useRouter();
+
+  // 마지막 섹션에서 눌렀을 때 토픽 목록으로 이동
+  const handleComplete = React.useCallback(() => {
+    router.push("/topics"); // 항상 토픽 선택 페이지로
+    // router.back()                 // ← “뒤로”처럼 동작시키고 싶으면 이 줄로 바꿔도 됩니다.
+  }, [router]);
 
   // 상단 행(이전/다음) 컨트롤: 섹션 변경시에만 재생성
   const topControls = React.useMemo(() => {
@@ -51,19 +59,47 @@ export default function AtomSpectrum() {
             </button>
           ) : (
             <button
-              onClick={() => setSection("intro")}
+              onClick={handleComplete}
               className="rounded-xl bg-indigo-600 px-3 py-1.5 text-white text-sm shadow hover:shadow-md"
             >
-              처음으로
+              학습완료
             </button>
           )}
         </div>
       </div>
     );
-  }, [section]);
+  }, [section, handleComplete]);
 
   // 섹션이 바뀔 때만 BottomBar 상단행 주입
   useBottomBarTop(topControls, [section]);
+
+  // 방향키로 섹션 이동 (입력 중일 땐 무시)
+  React.useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      // 인풋/텍스트영역/콘텐츠에디터 포커스면 키 내비게이션 차단
+      const el = e.target as HTMLElement | null;
+      const tag = el?.tagName?.toLowerCase();
+      const typing =
+        tag === "input" || tag === "textarea" || el?.isContentEditable;
+
+      if (typing) return;
+
+      const idx = TOC.findIndex((s) => s.id === section);
+      if (idx < 0) return;
+
+      if (e.key === "ArrowLeft" && idx > 0) {
+        e.preventDefault();
+        setSection(TOC[idx - 1].id);
+      }
+      if (e.key === "ArrowRight" && idx < TOC.length - 1) {
+        e.preventDefault();
+        setSection(TOC[idx + 1].id);
+      }
+    };
+
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [section]);
 
   return (
     <div className="grid grid-cols-12 gap-6">

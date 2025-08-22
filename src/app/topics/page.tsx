@@ -3,7 +3,11 @@ import Link from "next/link";
 import Fade from "@/components/Fade";
 
 const topics = [
-  { id: "atom-spectrum", title: "원자 스펙트럼", subtitle: "빛의 문법 읽기" },
+  {
+    id: "atom-spectrum",
+    title: "원자 스펙트럼",
+    subtitle: "빛의 문법 읽기",
+  },
   {
     id: "energy-band",
     title: "에너지띠",
