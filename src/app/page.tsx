@@ -1,13 +1,10 @@
 "use client";
 import Link from "next/link";
 import Fade from "@/components/Fade";
-import TopBar from "@/components/TopBar";
-import BottomBar from "@/components/BottomBar";
 
 export default function Page() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 text-slate-900">
-      <TopBar />
       <main className="mx-auto max-w-6xl px-4 pb-24 pt-10">
         <Fade routeKey="landing">
           <section className="grid place-items-center py-24 text-center">
@@ -33,17 +30,6 @@ export default function Page() {
           </section>
         </Fade>
       </main>
-      <BottomBar
-        center={<span>스펙트라 데모 · 게스트 실행</span>}
-        right={
-          <Link
-            href="/topics"
-            className="rounded-xl bg-slate-900 px-4 py-2 text-white shadow hover:shadow-md"
-          >
-            시작하기
-          </Link>
-        }
-      />
     </div>
   );
 }

@@ -1,21 +1,73 @@
 "use client";
 import React from "react";
-import FormativeQuiz from "../FormativeQuiz";
+import { useBottomBarTop } from "@/components/BottomBarProvider";
+
+// 컴포넌트 밖: TOC 상수(참조 안정)
+const TOC = [
+  { id: "intro", label: "도입" },
+  { id: "observe", label: "관찰" },
+  { id: "model", label: "모델·식" },
+  { id: "formative", label: "형성체크" },
+  { id: "wrap", label: "정리" },
+] as const;
+type SectionId = (typeof TOC)[number]["id"];
 
 export default function AtomSpectrum() {
-  const [section, setSection] = React.useState<
-    "intro" | "observe" | "model" | "formative" | "wrap"
-  >("intro");
-  const toc = [
-    { id: "intro", label: "도입" },
-    { id: "observe", label: "관찰" },
-    { id: "model", label: "모델·식" },
-    { id: "formative", label: "형성체크" },
-    { id: "wrap", label: "정리" },
-  ] as const;
+  const [section, setSection] = React.useState<SectionId>("intro");
+
+  // 상단 행(이전/다음) 컨트롤: 섹션 변경시에만 재생성
+  const topControls = React.useMemo(() => {
+    const idx = Math.max(
+      0,
+      TOC.findIndex((s) => s.id === section)
+    );
+    const prev = idx > 0 ? TOC[idx - 1] : null;
+    const next = idx < TOC.length - 1 ? TOC[idx + 1] : null;
+
+    return (
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => prev && setSection(prev.id)}
+          disabled={!prev}
+          className={
+            "rounded-xl px-3 py-1.5 border text-sm shadow-sm " +
+            (prev
+              ? "bg-white hover:shadow border-slate-200"
+              : "bg-slate-100 text-slate-400 cursor-not-allowed")
+          }
+        >
+          ← 이전: {prev ? prev.label : "없음"}
+        </button>
+        <div className="ml-1 text-sm text-slate-600">
+          섹션 {idx + 1} / {TOC.length} · <strong>{TOC[idx].label}</strong>
+        </div>
+        <div className="ml-auto">
+          {next ? (
+            <button
+              onClick={() => setSection(next.id)}
+              className="rounded-xl bg-slate-900 px-3 py-1.5 text-white text-sm shadow hover:shadow-md"
+            >
+              다음: {next.label} →
+            </button>
+          ) : (
+            <button
+              onClick={() => setSection("intro")}
+              className="rounded-xl bg-indigo-600 px-3 py-1.5 text-white text-sm shadow hover:shadow-md"
+            >
+              처음으로
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }, [section]);
+
+  // 섹션이 바뀔 때만 BottomBar 상단행 주입
+  useBottomBarTop(topControls, [section]);
 
   return (
     <div className="grid grid-cols-12 gap-6">
+      {/* Sidebar */}
       <aside className="col-span-12 lg:col-span-3">
         <div className="sticky top-16 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
           <div className="mb-3 text-sm uppercase tracking-wider text-slate-400">
@@ -23,7 +75,7 @@ export default function AtomSpectrum() {
           </div>
           <h3 className="mb-4 text-xl font-semibold">원자 스펙트럼</h3>
           <nav className="flex flex-col gap-1">
-            {toc.map((s) => (
+            {TOC.map((s) => (
               <button
                 key={s.id}
                 onClick={() => setSection(s.id)}
@@ -41,6 +93,7 @@ export default function AtomSpectrum() {
         </div>
       </aside>
 
+      {/* Content */}
       <section className="col-span-12 lg:col-span-9">
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm prose prose-slate max-w-none">
           {section === "intro" && (
@@ -60,6 +113,7 @@ export default function AtomSpectrum() {
               </p>
             </>
           )}
+
           {section === "observe" && (
             <>
               <h2>관찰 — 스펙트럼 기록</h2>
@@ -94,45 +148,43 @@ export default function AtomSpectrum() {
                 </tbody>
               </table>
               <p className="text-sm text-slate-500">
-                ※ 실제 수치는 장비에 따라 다소 차이
+                ※ 실제 수치는 장비에 따라 차이
               </p>
             </>
           )}
+
           {section === "model" && (
             <>
               <h2>모델·식 — 전이와 파장</h2>
               <p>
-                보어 모형에서 에너지 준위는{" "}
-                <code>E_n = -13.6 Z^2 / n^2 (eV)</code>. 전이{" "}
-                <code>n₂ → n₁</code>에 대한 방출 에너지는{" "}
-                <code>ΔE = 13.6 Z^2 (1/n₁² - 1/n₂²)</code>,{" "}
+                보어 모형: <code>E_n = -13.6 Z^2 / n^2</code> (eV), 전이{" "}
+                <code>n₂→n₁</code>의 방출 에너지는
+                <code> ΔE = 13.6 Z^2 (1/n₁² - 1/n₂²) </code>,{" "}
                 <code>λ = hc/ΔE</code>.
               </p>
               <div className="rounded-xl bg-slate-50 p-4">
-                <strong>예제</strong> (Balmer, H: Z=1). <br />
-                n₂=3 → n₁=2:
+                <strong>예제</strong> (Balmer, H: Z=1). n₂=3 → n₁=2:
                 <ul>
-                  <li>ΔE = 13.6 (1/2² − 1/3²) ≈ 1.889 eV</li>
-                  <li>λ = 1240 / 1.889 ≈ 656.3 nm</li>
+                  <li>ΔE ≈ 1.889 eV</li>
+                  <li>λ ≈ 656.3 nm</li>
                 </ul>
               </div>
             </>
           )}
+
           {section === "formative" && (
             <>
               <h2>형성체크 — 3문항</h2>
-              <FormativeQuiz />
+              {/* FormativeQuiz 컴포넌트 넣으셨다면 여기 삽입 */}
             </>
           )}
+
           {section === "wrap" && (
             <>
               <h2>정리 — 한 문장</h2>
               <p>
-                “선의 간격은 원자의 에너지 준위 문법이다. 전이가 클수록 빛은 더
-                짧은 파장으로 나온다.”
-              </p>
-              <p className="text-sm text-slate-500">
-                다음: Z가 커지면(He⁺) 문법은 어떻게 달라질까?
+                “선의 간격은 원자의 에너지 준위 문법이다. 전이가 클수록 파장은
+                더 짧아진다.”
               </p>
             </>
           )}

@@ -1,7 +1,6 @@
 "use client";
 import { useParams } from "next/navigation";
 import Fade from "@/components/Fade";
-import TopBar from "@/components/TopBar";
 import AtomSpectrum from "@/components/lessons/AtomSpectrum";
 
 const titles: Record<string, string> = {
@@ -17,7 +16,6 @@ export default function LessonPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 text-slate-900">
-      <TopBar showBack />
       <main className="mx-auto max-w-6xl px-4 pb-24 pt-10">
         <Fade routeKey={`lesson-${slug}`}>
           {slug === "atom-spectrum" ? (

@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import Fade from "@/components/Fade";
-import TopBar from "@/components/TopBar";
 
 const topics = [
   { id: "atom-spectrum", title: "원자 스펙트럼", subtitle: "빛의 문법 읽기" },
@@ -20,11 +19,10 @@ const topics = [
 export default function TopicsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-slate-50 text-slate-900">
-      <TopBar showBack />
       <main className="mx-auto max-w-6xl px-4 pb-24 pt-10">
         <Fade routeKey="topics">
           <header className="mb-6">
-            <h2 className="text-2xl md:text-3xl font-bold">토픽 선택</h2>
+            <h2 className="text-2xl md:text-3xl font-bold">Topics</h2>
             <p className="text-slate-600">
               원하는 토픽을 선택하면 즉시 데모 레슨으로 이동합니다.
             </p>
