@@ -7,28 +7,13 @@ import FormativeQuiz from '@/components/FormativeQuiz'
 import { $, $$ } from '@/components/math/tags'
 
 // ──────────────────────────────────────────────────────────────────────────────
-// 📘 편집 가이드 (이 파일은 콘텐츠 입력용 메인 파일입니다)
-// 1) 본문 입력 위치
-//    - return 안에서 다음 다섯 개 CELL 구간을 찾아 편집하세요.
-//      ▸ █ CELL A — 도입(INTRO)
-//      ▸ █ CELL B — 관찰(OBSERVE)
-//      ▸ █ CELL C — 모델·식(MODEL)
-//      ▸ █ CELL D — 형성체크(FORMATIVE)
-//      ▸ █ CELL E — 정리(WRAP)
-//
-// 2) 수식 입력
-//    - 인라인:  {$`\\lambda = \\frac{hc}{\\Delta E}`}
-//    - 블록:    {$$`\\int_0^\\infty e^{-x^2}\\,dx = \\frac{\\sqrt{\\pi}}{2}`}
-//    - AutoMath가 감싼 범위에서 자동 렌더됩니다.
-//
-// 3) 표/이미지
-//    - 표는 <table> 그대로 수정. 이미지 필요 시 <img src="/path" alt="..."/> 사용.
-//
-// 4) 네비게이션/바텀바
-//    - 상·하단 내비 로직은 구성되어 있으므로 본문만 편집하시면 됩니다.
+// 📘 콘텐츠 입력 템플릿 (본문만 교체하세요)
+// - 다섯 개 CELL(도입/관찰/모델·식/형성체크/정리) 안쪽의 텍스트와 마크업만 수정.
+// - 수식: 인라인 {$`E=mc^2`} / 블록 {$$`\\int_0^1 x^2 dx`}
+// - 이미지: <img src="/path" alt="설명" className="rounded-xl border" />
+// - 표: <table> 그대로 수정.
 // ──────────────────────────────────────────────────────────────────────────────
 
-// TOC 상수(참조 안정)
 const TOC = [
   { id: 'intro', label: '도입' },
   { id: 'observe', label: '관찰' },
@@ -42,13 +27,10 @@ export default function AtomSpectrum() {
   const [section, setSection] = React.useState<SectionId>('intro')
   const router = useRouter()
 
-  // 마지막 섹션에서 "학습완료" → 토픽 목록으로 이동
   const handleComplete = React.useCallback(() => {
     router.push('/topics')
-    // router.back()  // ← 브라우저 '뒤로'처럼 동작시키려면 이 줄로 교체
   }, [router])
 
-  // BottomBar 상단행: 이전/다음 내비 + 상태표시
   const topControls = React.useMemo(() => {
     const idx = Math.max(
       0,
@@ -97,20 +79,16 @@ export default function AtomSpectrum() {
     )
   }, [section, handleComplete])
 
-  // BottomBar 상단행 주입(섹션 바뀔 때만 갱신)
   useBottomBarTop(topControls, [section])
 
-  // 방향키 섹션 내비(입력 중엔 비활성, 마지막 섹션에선 → 미동작)
   React.useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const el = e.target as HTMLElement | null
       const tag = el?.tagName?.toLowerCase()
       const typing = tag === 'input' || tag === 'textarea' || el?.isContentEditable
       if (typing) return
-
       const idx = TOC.findIndex((s) => s.id === section)
       if (idx < 0) return
-
       if (e.key === 'ArrowLeft' && idx > 0) {
         e.preventDefault()
         setSection(TOC[idx - 1].id)
@@ -120,7 +98,6 @@ export default function AtomSpectrum() {
         setSection(TOC[idx + 1].id)
       }
     }
-
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
   }, [section])
@@ -154,144 +131,145 @@ export default function AtomSpectrum() {
       {/* Content */}
       <section className="col-span-12 lg:col-span-9">
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm prose prose-slate max-w-none">
-          {/* ────────────────────────────────────────────────────────────────
-             █ CELL A — 도입(INTRO)
-             ▸ 이 섹션은 이야기의 ‘문을 여는’ 부분입니다.
-             ▸ 텍스트, 간단한 수식(인라인), 핵심 질문/목표를 자유롭게 편집하세요.
-             ─────────────────────────────────────────────────────────────── */}
           <AutoMath trigger={section}>
+            {/* ────────────────────────────────────────────────────────────────
+               █ CELL A — 도입(INTRO)
+               ▸ 목적: 학습 배경·맥락 제시, 핵심 질문 제안, 학습 목표 명료화
+               ▸ 가이드: ① 한 문장 요약 ② 핵심 질문 ③ 학습목표(3개 내외)
+               ─────────────────────────────────────────────────────────────── */}
             {section === 'intro' && (
               <>
-                {/* ▼▼▼▼▼ 여기부터 도입(문단/리스트/수식) 편집 ▼▼▼▼▼ */}
-                <h2>도입 — 빛의 문법 읽기</h2>
+                <h2>도입 — 여기 제목을 입력하세요</h2>
                 <p>
-                  네온사인과 수소 방전관의 빛을 분해하면 무지개 띠가 아니라 <strong>선</strong>으로
-                  나타납니다. 왜 띄엄띄엄일까요?
+                  [한 문장 요약] 이 레슨은 무엇을, 왜 배우는가? 학생의 경험/직관과 연결하여
+                  2–3문장으로 서술하세요. 필요 시 인라인 수식 예: {$`E=mc^2`}.
                 </p>
                 <ul>
-                  <li>핵심 질문: 모든 빛은 연속적인가?</li>
-                  <li>관찰 목표: 원소마다 선의 위치가 다름을 확인</li>
+                  <li>[핵심 질문] 수업이 답하려는 큰 질문 1</li>
+                  <li>[학습 목표] 지식/기능/태도 관점의 목표 2</li>
+                  <li>[선행 개념] 수업 전에 알고 오면 좋은 것 3</li>
                 </ul>
-                <p>
-                  <em>한 문장:</em> “빛의 간격은 원자의 <strong>에너지 준위</strong>라는 문법을
-                  드러낸다.”
-                </p>
-                {/* ▲▲▲▲▲ 도입 편집 끝 ▲▲▲▲▲ */}
+                <blockquote>
+                  교사 멘트(선택): 학생에게 건네는 한 문장 메시지. 예) “이 레슨의 모든 길은 ‘에너지
+                  차이’로 통합니다.”
+                </blockquote>
               </>
             )}
 
             {/* ────────────────────────────────────────────────────────────────
                █ CELL B — 관찰(OBSERVE)
-               ▸ 스펙트럼 표/이미지/관찰 활동 안내를 넣으세요.
-               ▸ 표는 <table> 그대로 수정, 이미지 추가 시 <img> 사용.
+               ▸ 목적: 공통 경험 만들기(관찰·실험·시뮬레이션·데모)
+               ▸ 가이드: ① 활동 지시 ② 기록 양식(표) ③ 토의 프롬프트
                ─────────────────────────────────────────────────────────────── */}
             {section === 'observe' && (
               <>
-                {/* ▼▼▼▼▼ 여기부터 관찰 섹션 편집 ▼▼▼▼▼ */}
-                <h2>관찰 — 스펙트럼 기록</h2>
-                <p>가상 분광기로 수소·네온·헬륨의 주요 선을 확인하고 표로 기록합니다.</p>
+                <h2>관찰 — 활동 제목을 입력하세요</h2>
+                <p>
+                  [활동 지시] 무엇을 관찰/조작/기록하는지 구체적으로 씁니다. 필요 시 이미지 삽입
+                  또는 링크를 제공합니다.
+                </p>
 
-                {/* 필요 시 이미지 삽입 예시:
-                <img src="/spectrometer.png" alt="가상 분광기" className="rounded-xl border" />
+                {/* 필요 시 이미지
+                <img src="/images/demo.png" alt="관찰 장면" className="rounded-xl border" />
                 */}
 
                 <table>
                   <thead>
                     <tr>
-                      <th>원소</th>
-                      <th>선 색</th>
-                      <th>파장 (nm)</th>
-                      <th>강도</th>
+                      <th>변수/대상</th>
+                      <th>관찰 포인트</th>
+                      <th>값/차이</th>
+                      <th>비고</th>
                     </tr>
                   </thead>
                   <tbody>
                     <tr>
-                      <td>H</td>
-                      <td>적</td>
-                      <td>656</td>
-                      <td>★ ★ ☆</td>
+                      <td>[예: H]</td>
+                      <td>[예: 선의 색]</td>
+                      <td>[예: 656 nm]</td>
+                      <td>—</td>
                     </tr>
                     <tr>
-                      <td>H</td>
-                      <td>청록</td>
-                      <td>486</td>
-                      <td>★ ★</td>
-                    </tr>
-                    <tr>
-                      <td>H</td>
-                      <td>청자주</td>
-                      <td>434</td>
-                      <td>★</td>
+                      <td>[예: He]</td>
+                      <td>[예: 선의 수]</td>
+                      <td>[예: 3개]</td>
+                      <td>—</td>
                     </tr>
                   </tbody>
                 </table>
-                <p className="text-sm text-slate-500">※ 실제 수치는 장비에 따라 차이</p>
-                {/* ▲▲▲▲▲ 관찰 편집 끝 ▲▲▲▲▲ */}
+
+                <ul>
+                  <li>[토의] 무엇이 같고, 무엇이 다른가?</li>
+                  <li>[토의] 차이를 설명할 후보 개념은 무엇인가?</li>
+                </ul>
               </>
             )}
 
             {/* ────────────────────────────────────────────────────────────────
                █ CELL C — 모델·식(MODEL)
-               ▸ 핵심 공식을 인라인/블록 수식으로 입력하세요.
-               ▸ 인라인: {$`E = mc^2`}  /  블록: {$$`\\frac{1}{\\lambda}=\\cdots`}
+               ▸ 목적: 관찰을 설명하는 개념·공식·표현(모델) 구성
+               ▸ 가이드: ① 핵심 정의 ② 기본 식 ③ 예제 ④ 주의할 오개념
                ─────────────────────────────────────────────────────────────── */}
             {section === 'model' && (
               <>
-                {/* ▼▼▼▼▼ 여기부터 모델·식 섹션 편집 ▼▼▼▼▼ */}
-                <h2>모델·식 — 전이와 파장</h2>
-                <p>
-                  보어 모형에서 에너지 준위는 {$`E_n = -13.6\,Z^2/n^2`} (eV)로 근사합니다. 전이{' '}
-                  {$`n_2 \to n_1`}에 대해 방출 광자의 에너지는{' '}
-                  {$`\Delta E = 13.6\,Z^2\!\left(\frac{1}{n_1^2} - \frac{1}{n_2^2}\right)`}, 파장은{' '}
-                  {$`\lambda = \frac{hc}{\Delta E}`} 입니다.
-                </p>
+                <h2>모델·식 — 핵심 개념/공식 제목</h2>
 
-                <div className="rounded-xl bg-slate-50 p-4">
-                  <strong>예제</strong> (Balmer, {$`Z=1`}). {$`n_2=3 \to n_1=2`}:
-                  <ul>
-                    <li>
-                      {$`\Delta E = 13.6\!\left(\frac{1}{2^2}-\frac{1}{3^2}\right) \approx 1.889\ \mathrm{eV}`}
-                    </li>
-                    <li>{$`\lambda = \frac{1240}{1.889} \approx 656.3\ \mathrm{nm}`}</li>
-                  </ul>
+                <h3>핵심 정의</h3>
+                <p>여기에 개념 정의를 씁니다. 인라인 수식 예: {$`n_2 \\to n_1`}.</p>
+
+                <h3>기본 식</h3>
+                <p>
+                  [공식 1] {$`\\text{여기에 핵심식 1}`} · [공식 2] {$`\\text{여기에 핵심식 2}`} .
+                </p>
+                <div className="my-4">
+                  {$$`\\boxed{\\text{여기에 블록 수식 예: }\\;\\lambda = \\tfrac{hc}{\\Delta E}}`}
                 </div>
 
-                {/* 블록 수식 예시 필요 시 활성화
-                {$$`\frac{1}{\lambda} = R_H\left(\frac{1}{n_1^2}-\frac{1}{n_2^2}\right)`}
-                */}
-                {/* ▲▲▲▲▲ 모델·식 편집 끝 ▲▲▲▲▲ */}
+                <h3>예제</h3>
+                <ol>
+                  <li>예제 1: 문제 서술 → 풀이의 핵심 단계(2–3줄) → 최종 답</li>
+                  <li>예제 2: 변형 상황(매개변수 바꾸기, 단위 환산 등)</li>
+                </ol>
+
+                <h3>오개념 주의</h3>
+                <ul>
+                  <li>오개념 A: [간단 진단 문장]</li>
+                  <li>오개념 B: [간단 진단 문장]</li>
+                </ul>
               </>
             )}
 
             {/* ────────────────────────────────────────────────────────────────
                █ CELL D — 형성체크(FORMATIVE)
-               ▸ FormativeQuiz 컴포넌트(자동 채점) 영역입니다.
-               ▸ 문항을 바꾸려면 FormativeQuiz 컴포넌트를 수정하세요.
+               ▸ 목적: 수업 중 즉시 확인(정답률/오답군/재응답 향상)
+               ▸ 가이드: 안내 문장 1–2줄 + (기본) FormativeQuiz 컴포넌트 사용
                ─────────────────────────────────────────────────────────────── */}
             {section === 'formative' && (
               <>
-                {/* ▼▼▼▼▼ 여기부터 형성체크 섹션 편집(설명/지시문만) ▼▼▼▼▼ */}
-                <h2>형성체크 — 3문항</h2>
+                <h2>형성체크 — 안내 문구를 입력하세요</h2>
+                <p>
+                  [안내] 아래 문항에 응답해 보세요. 필요하면 <em>FormativeQuiz</em> 구성요소를
+                  교체하거나 문항/채점 기준을 편집하세요.
+                </p>
                 <FormativeQuiz />
-                {/* ▲▲▲▲▲ 형성체크 편집 끝 ▲▲▲▲▲ */}
               </>
             )}
 
             {/* ────────────────────────────────────────────────────────────────
                █ CELL E — 정리(WRAP)
-               ▸ 수업을 한 문장으로 마무리하거나 다음 차시 연결 힌트를 적으세요.
-               ▸ 필요 시 간단한 개념 화살표를 블록 수식으로 넣어도 좋습니다.
+               ▸ 목적: 한 문장 수렴, 다음 차시로의 연결 고리 제시
+               ▸ 가이드: ① 한 문장 정리 ② 오늘의 문법 ③ 다음 질문
                ─────────────────────────────────────────────────────────────── */}
             {section === 'wrap' && (
               <>
-                {/* ▼▼▼▼▼ 여기부터 정리 섹션 편집 ▼▼▼▼▼ */}
-                <h2>정리 — 한 문장</h2>
-                <p>
-                  “선의 간격은 원자의 에너지 준위 문법이다. 전이가 클수록 빛은 더 짧은 파장으로
-                  나온다 ({$`\Delta E \uparrow \Rightarrow \lambda \downarrow`}
-                  ).”
-                </p>
-                {/* ▲▲▲▲▲ 정리 편집 끝 ▲▲▲▲▲ */}
+                <h2>정리 — 한 문장 요약</h2>
+                <p>[정리 문장] 오늘 배운 핵심 아이디어를 한 문장으로 수렴하세요.</p>
+                <ul>
+                  <li>
+                    [오늘의 문법] 예: {$`\\Delta E \\uparrow \\Rightarrow \\lambda \\downarrow`}
+                  </li>
+                  <li>[다음 질문] 예: “핵전하가 커지면 이 문법은 어떻게 달라질까?”</li>
+                </ul>
               </>
             )}
           </AutoMath>
