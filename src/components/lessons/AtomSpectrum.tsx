@@ -288,8 +288,7 @@ export default function AtomSpectrum() {
                 <h2>정리 — 한 문장</h2>
                 <p>
                   “선의 간격은 원자의 에너지 준위 문법이다. 전이가 클수록 빛은 더 짧은 파장으로
-                  나온다 ({$`\Delta E \uparrow \Rightarrow \lambda \downarrow`}
-                  ).”
+                  나온다.” {$$`\Delta E \uparrow \Rightarrow \lambda \downarrow`}
                 </p>
                 {/* ▲▲▲▲▲ 정리 편집 끝 ▲▲▲▲▲ */}
               </>
